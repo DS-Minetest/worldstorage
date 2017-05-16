@@ -13,25 +13,21 @@ local modname = minetest.get_current_modname()
 
 worldstorage = {}
 
-local modstorage = core.get_mod_storage()
-
-local activated = false
-function worldstorage.is_activated()
-	return activated
-end
-
 local activate_functions = {}
 function worldstorage.register_on_activate(f)
 	activate_functions[#activate_functions+1] = f
 end
 
 local worldname
+function worldstorage.get_current_worldname()
+	return worldname
+end
 local function set_worldname(name)
+	local first_time = worldname == nil
 	worldname = name
 	for i = 1, #activate_functions do
-		activate_functions[i]()
+		activate_functions[i](first_time)
 	end
-	activated = true
 	return "Worldname set to "..name.."."
 end
 
@@ -59,7 +55,7 @@ minetest.register_chatcommand("worldname", {
     description = "",
     func = function(param)
 		if param == "get" then
-			if not worldstorage.is_activated() then
+			if not worldname then
 				return false, "No worldname set."
 			end
 			return true, worldname
@@ -70,14 +66,14 @@ minetest.register_chatcommand("worldname", {
     end,
 })
 
-worldstorage.register_on_activate(function()
-	if activated then
+worldstorage.register_on_activate(function(first_time)
+	if not first_time then
 		return
 	end
+
+	local modstorage = core.get_mod_storage()
+
 	local prefix = worldname.."/"
-	function worldstorage.get_current_worldname()
-		return worldname
-	end
 
 	function worldstorage.get_int(key)
 		return modstorage:get_int(prefix..key)

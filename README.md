@@ -1,4 +1,4 @@
-The mod can only be used if `worldstorage.is_activated()` returns `true`.
+The mod can only be used if `worldstorage.get_current_worldname()` doesn't return `nil`.
 - `worldstorage.get_current_worldname()`
 - `worldstorage.get_int(key)`
 - `worldstorage.set_int(key, value)`
