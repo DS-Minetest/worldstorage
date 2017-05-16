@@ -13,6 +13,8 @@ local modname = minetest.get_current_modname()
 
 worldstorage = {}
 
+local modstorage = core.get_mod_storage()
+
 local activate_functions = {}
 function worldstorage.register_on_activate(f)
 	activate_functions[#activate_functions+1] = f
@@ -70,8 +72,6 @@ worldstorage.register_on_activate(function(first_time)
 	if not first_time then
 		return
 	end
-
-	local modstorage = core.get_mod_storage()
 
 	local prefix = worldname.."/"
 
