@@ -26,10 +26,8 @@ function worldstorage.register_on_activate(f)
 end
 
 local worldname
-local worldname_length
 local function set_worldname(name)
-	worldname = name.."/"
-	worldname_length = #worldname
+	worldname = name
 	for i = 1, #activate_functions do
 		activate_functions[i]()
 	end
@@ -64,7 +62,7 @@ minetest.register_chatcommand("worldname", {
 			if not worldstorage.is_activated() then
 				return false, "No worldname set."
 			end
-			return true, worldstorage.get_current_worldname()
+			return true, worldname
 		elseif param:sub(1, 4) == "set " then
 			param = param:sub(5)
 		end
@@ -73,38 +71,42 @@ minetest.register_chatcommand("worldname", {
 })
 
 worldstorage.register_on_activate(function()
+	if activated then
+		return
+	end
+	local prefix = worldname.."/"
 	function worldstorage.get_current_worldname()
-		return worldname:sub(1, -2)
+		return worldname
 	end
 
 	function worldstorage.get_int(key)
-		return modstorage:get_int(worldname..key)
+		return modstorage:get_int(prefix..key)
 	end
 
 	function worldstorage.set_int(key, value)
-		modstorage:set_int(worldname..key)
+		modstorage:set_int(prefix..key)
 	end
 
 	function worldstorage.get_float(key)
-		return modstorage:get_float(worldname..key)
+		return modstorage:get_float(prefix..key)
 	end
 
 	function worldstorage.set_float(key, value)
-		modstorage:set_float(worldname..key)
+		modstorage:set_float(prefix..key)
 	end
 
 	function worldstorage.get_string(key)
-		return modstorage:get_string(worldname..key)
+		return modstorage:get_string(prefix..key)
 	end
 
 	function worldstorage.set_string(key, value)
-		modstorage:set_string(worldname..key)
+		modstorage:set_string(prefix..key)
 	end
 
 	function worldstorage.to_table()
 		local t = modstorage:to_table()
 		for k,_ in pairs(t) do
-			if k:sub(worldname_length) ~= worldname then
+			if k:sub(#prefix) ~= prefix then
 				t[k] = nil
 			end
 		end
@@ -114,12 +116,12 @@ worldstorage.register_on_activate(function()
 	function worldstorage.from_table(values)
 		local t = modstorage:to_table()
 		for k,_ in pairs(t) do
-			if k:sub(worldname_length) == worldname then
+			if k:sub(#prefix) == prefix then
 				t[k] = nil
 			end
 		end
 		for k, v in pairs(values) do
-			t[worldname..k] = v
+			t[prefix..k] = v
 		end
 		modstorage:from_table(t)
 	end
