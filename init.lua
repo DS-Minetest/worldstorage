@@ -80,7 +80,7 @@ worldstorage.register_on_activate(function(first_time)
 	end
 
 	function worldstorage.set_int(key, value)
-		modstorage:set_int(prefix..key)
+		modstorage:set_int(prefix..key, value)
 	end
 
 	function worldstorage.get_float(key)
@@ -88,7 +88,7 @@ worldstorage.register_on_activate(function(first_time)
 	end
 
 	function worldstorage.set_float(key, value)
-		modstorage:set_float(prefix..key)
+		modstorage:set_float(prefix..key, value)
 	end
 
 	function worldstorage.get_string(key)
@@ -96,7 +96,7 @@ worldstorage.register_on_activate(function(first_time)
 	end
 
 	function worldstorage.set_string(key, value)
-		modstorage:set_string(prefix..key)
+		modstorage:set_string(prefix..key, value)
 	end
 
 	function worldstorage.to_table()
